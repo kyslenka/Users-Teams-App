@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import Teams from "./Teams.jsx";
 import TeamMembers from "./TeamMembers.jsx";
+import Search from "./Search.jsx";
 
 const renderHome = teams => {
   return (
@@ -12,6 +13,16 @@ const renderHome = teams => {
     </div>
   );
 };
+
+// const renderSearchResults = teams => {
+//   return (
+//     <div>
+//       {teams.map(team => (
+//         <SearchResults id={team.id} name={team.name} teamLead={team.teamLead} />
+//       ))}
+//     </div>
+//   );
+// };
 
 //   renderUsers = routerData => {
 //         const userId = routerData.match.params.userId;
@@ -68,9 +79,10 @@ class App extends Component {
     return <TeamMembers id={teamId} team={allTeam} />;
   };
 
-  // renderSearchResults = () => {
-  //   return <SearchResults />
-  // }
+  renderSearch = () => {
+    return <Search />;
+    // return renderSearchResults(this.state.teams);
+  };
 
   // renderTeamMembers = routerData => {
   //   return renderTeamMembers(routerData, this.state.teams);
@@ -87,11 +99,7 @@ class App extends Component {
             path="https://tempo-exercises.herokuapp.com/rest/v1/teams/:teamId/"
             render={this.renderTeamMembers}
           />
-          {/* <Route
-            exact={true}
-            path="/searchResults"
-            render={renderSearchResults}
-          /> */}
+          <Route exact={true} path="/search" render={this.renderSearch} />
         </div>
       </BrowserRouter>
     );
