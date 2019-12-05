@@ -17,15 +17,15 @@ const renderHome = teams => {
 //         const userId = routerData.match.params.userId;
 //         return <Users id={userId} />;
 //       };
-const renderTeamMembers = (routerData, teams) => {
-  const teamId = routerData.match.params.teamId;
-  const allTeam = teams.find(team => {
-    return team.id === teamId;
-  });
-  const teamUsers = users.filter(user => user.teamId === team.id);
-  console.log(users);
-  return <TeamMembers team={allTeam} users={teamUsers} />;
-};
+// const renderTeamMembers = (routerData, teams) => {
+//   const teamId = routerData.match.params.teamId;
+//   const allTeam = teams.find(team => {
+//     return team.id === teamId;
+//   });
+//   const teamUsers = users.filter(user => user.teamId === team.id);
+//   console.log(users);
+//   return <TeamMembers team={allTeam} users={teamUsers} />;
+// };
 
 class App extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ class App extends Component {
 
   componentDidMount = () => {
     this.fetchTeams();
-    this.fetchUsers();
+    // this.fetchUsers();
   };
 
   fetchTeams = async () => {
@@ -48,21 +48,33 @@ class App extends Component {
     const data = await response.json();
     this.setState({ teams: data });
   };
-  fetchUsers = async () => {
-    const response = await fetch(
-      "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users"
-    );
-    const data = await response.json();
-    this.setState({ users: data });
-  };
+  // fetchUsers = async () => {
+  //   const response = await fetch(
+  //     "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users"
+  //   );
+  //   const data = await response.json();
+  //   this.setState({ users: data });
+  // };
 
   renderHome = () => {
     return renderHome(this.state.teams);
   };
 
   renderTeamMembers = routerData => {
-    return renderTeamMembers(routerData, this.state.teams);
+    const teamId = routerData.match.params.teamId;
+    const allTeam = teams.find(team => {
+      return team.id === teamId;
+    });
+    return <TeamMembers id={teamId} team={allTeam} />;
   };
+
+  // renderSearchResults = () => {
+  //   return <SearchResults />
+  // }
+
+  // renderTeamMembers = routerData => {
+  //   return renderTeamMembers(routerData, this.state.teams);
+  // };
 
   render() {
     return (
