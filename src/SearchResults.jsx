@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 class SearchResults extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
     const { teams, query } = this.props;
     const results = teams.filter(team => {
