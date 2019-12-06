@@ -19,7 +19,8 @@ class App extends Component {
     super(props);
     this.state = {
       teams: [],
-      users: []
+      users: [],
+      usersId: []
     };
   }
 
@@ -31,8 +32,26 @@ class App extends Component {
     const response = await fetch(
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
     );
-    const data = await response.json();
-    this.setState({ teams: data });
+    const teamInfo = await response.json();
+    const usersResponse = await fetch(
+      "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/"
+    );
+    const userInformation = await usersResponse.json();
+    this.setState({ users: userInformation });
+    const userInfo = await Promise.all(
+      userInformation.map(async user => {
+        const userResponse = await fetch(
+          `https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/${user.userId}`
+        );
+        console.log(userResponse);
+        return userResponse.json();
+      })
+    );
+    console.log(userInfo);
+    this.setState({
+      teams: teamInfo,
+      usersId: userInfo
+    });
   };
 
   renderAllTeams = () => {

@@ -22,7 +22,7 @@ class Teams extends Component {
             {this.props.name}
           </div>
           <div>
-            <p>Team Leader ID:</p>
+            <p>Team Lead ID:</p>
             {this.props.teamLead}
           </div>
           <div>
