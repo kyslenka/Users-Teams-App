@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 const WrapperLink = styled(Link)`
   text-decoration: none;
@@ -19,24 +20,15 @@ class Teams extends Component {
         <div className="card center">
           <div>
             <p>Team Name:</p>
-            {this.props.name}
+            {this.props.teams.name}
           </div>
           <div>
-            <p>Team Lead ID:</p>
-            {this.props.teamLead}
-          </div>
-          <div>
-            <p>Team ID:</p>
-            {this.props.id}
+            <p>Team Lead:</p>
+            {this.props.teams.teamLead}
           </div>
           <div className="link">
-            <WrapperLink
-              to={
-                "https://tempo-exercises.herokuapp.com/rest/v1/teams/" +
-                this.props.id
-              }
-            >
-              View Team Users
+            <WrapperLink to={"teams/" + this.props.teams.id}>
+              View Team Members
             </WrapperLink>
           </div>
         </div>
@@ -45,4 +37,8 @@ class Teams extends Component {
   }
 }
 
-export default Teams;
+const mapStateToProps = state => {
+  return { teams: state.teams };
+};
+
+export default connect(mapStateToProps)(Teams);

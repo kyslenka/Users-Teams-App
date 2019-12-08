@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 class SearchResults extends Component {
-  constructor(props) {
-    super(props);
-  }
   render() {
-    const { teams, query } = this.props;
-    const results = teams.filter(team => {
+    const results = this.props.teams.filter(team => {
       return team.name.toLowerCase().includes(query.toLowerCase());
     });
     return (
@@ -30,4 +27,8 @@ class SearchResults extends Component {
   }
 }
 
-export default SearchResults;
+const mapStateToProps = state => {
+  return { teams: state.teams, query: state.query };
+};
+
+export default connect(mapStateToProps)(SearchResults);

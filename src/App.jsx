@@ -3,25 +3,11 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Teams from "./Teams.jsx";
 import TeamMembers from "./TeamMembers.jsx";
 import Navbar from "./Navbar.jsx";
-
-const renderAllTeams = teams => {
-  return (
-    <div className="container">
-      {teams.map(team => (
-        <Teams id={team.id} name={team.name} teamLead={team.teamLead} />
-      ))}
-    </div>
-  );
-};
+import { connect } from "react-redux";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      teams: [],
-      users: [],
-      usersId: []
-    };
   }
 
   componentDidMount = () => {
@@ -29,41 +15,49 @@ class App extends Component {
   };
 
   fetchTeams = async () => {
-    const response = await fetch(
+    const teamResponse = await fetch(
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
     );
-    const teamInfo = await response.json();
-    const usersResponse = await fetch(
-      "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/"
+    const teamsData = await teamResponse.json();
+    if (teamsData.succes) {
+      this.props.dispatch({ type: "SET_TEAMS", teams: teamsData.teams });
+    }
+    const userResponse = await fetch(
+      "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users"
     );
-    const userInformation = await usersResponse.json();
-    this.setState({ users: userInformation });
-    const userInfo = await Promise.all(
-      userInformation.map(async user => {
-        const userResponse = await fetch(
-          `https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/${user.userId}`
-        );
-        console.log(userResponse);
-        return userResponse.json();
-      })
-    );
-    console.log(userInfo);
-    this.setState({
-      teams: teamInfo,
-      usersId: userInfo
+    const usersData = await userResponse.json();
+    if (usersData.success) {
+      this.props.dispatch({ type: "SET_USERS", users: usersData.users });
+    }
+    const formattedTeams = teamsData.map(async team => {
+      team.users = usersData.filter(user => user.teamId === team.id);
+      const { teamLead } = team;
+      if (!teamLead) {
+        return team;
+      }
+      const leadResponse = await fetch(
+        `https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/${team.teamLead}`
+      );
+      const lead = await leadResponse.json();
+      team.teamLead = `${lead.name.first} ${lead.name.last}`;
+      return team;
     });
+    console.log(await Promise.all(formattedTeams));
   };
 
   renderAllTeams = () => {
-    return renderAllTeams(this.state.teams);
+    return (
+      <div className="container">
+        {this.props.teams.map(team => (
+          <Teams name={team.name} teamLead={team.teamLead} />
+        ))}
+      </div>
+    );
   };
 
   renderTeamMembers = routerData => {
     const teamId = routerData.match.params.teamId;
-    const allTeam = teams.find(team => {
-      return team.id === teamId;
-    });
-    return <TeamMembers id={teamId} team={allTeam} />;
+    return <TeamMembers id={teamId} />;
   };
 
   render() {
@@ -72,10 +66,9 @@ class App extends Component {
         <Navbar />
         <div>
           <Route exact={true} path="/teams" render={this.renderAllTeams} />
-          {/* <Route exact={true} path="/users/:userId" render={renderUsers} /> */}
           <Route
             exact={true}
-            path="https://tempo-exercises.herokuapp.com/rest/v1/teams/:teamId/"
+            path="/teams/:teamId/"
             render={this.renderTeamMembers}
           />
         </div>
@@ -84,4 +77,8 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return { teams: state.teams, users: state.users };
+};
+
+export default connect(mapStateToProps)(App);

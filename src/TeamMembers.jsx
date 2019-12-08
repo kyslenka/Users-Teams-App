@@ -1,38 +1,21 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 class TeamMembers extends Component {
-  constructor() {
-    super();
-    this.state = {
-      users: []
-    };
+  constructor(props) {
+    super(props);
   }
-
-  componentDidMount = () => {
-    this.fetchUsers();
-  };
-
-  fetchUsers = async () => {
-    const response = await fetch(
-      "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users"
-    );
-    const data = await response.json();
-    this.setState({ users: data });
-  };
 
   render() {
     const { id } = this.props;
-    if (this.state.users.length === 0) {
-      return <p>No users in this team</p>;
-    }
-    const users = this.state.users.filter(user => user.teamId === id);
+    const teamUsers = this.props.users.filter(user => user.teamId === id);
     return (
       <div>
         <div className="card center">
           <div>
             <h1>Users:</h1>
             <ul>
-              {users.map(user => (
+              {teamUsers.map(user => (
                 <li>{user.userId}</li>
               ))}
             </ul>
@@ -43,4 +26,8 @@ class TeamMembers extends Component {
   }
 }
 
-export default TeamMembers;
+const mapStateToProps = state => {
+  return { users: state.users };
+};
+
+export default connect(mapStateToProps)(TeamMembers);

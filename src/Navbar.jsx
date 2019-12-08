@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { connect } from "react-redux";
 
 const NavContainer = styled.div`
   display: flex;
@@ -26,10 +27,6 @@ const NavContainer = styled.div`
 class Navbar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      query: "",
-      teams: []
-    };
   }
 
   fetchTeams = async () => {
@@ -37,29 +34,29 @@ class Navbar extends Component {
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
     );
     const data = await response.json();
-    this.setState({ teams: data });
+    if (data.succes) {
+      this.props.dispatch({ type: "SET_QUERY", query: data.query });
+    }
   };
 
-  handleQuery = () => {
-    this.setState(
-      {
-        query: event.target.value
-      },
-      () => {
-        if (this.state.query && this.state.query.length > 1) {
-          if (this.state.query.length % 2 === 0) {
-            this.fetchTeams();
-          }
-        } else if (!this.state.query) {
-          this.setState({ query: "", teams: [] });
+  handleQuery = evt => {
+    this.props.dispatch({
+      type: "SET_QUERY",
+      query: evt.target.value
+    });
+    () => {
+      if (this.props.query && this.props.query.length > 1) {
+        if (this.props.query.length % 2 === 0) {
+          this.fetchTeams();
         }
+      } else if (!this.props.query) {
       }
-    );
+    };
   };
 
   render() {
-    const results = this.state.teams.filter(team => {
-      return team.name.toLowerCase().includes(this.state.query.toLowerCase());
+    const results = this.props.teams.filter(team => {
+      return team.name.toLowerCase().includes(this.props.query.toLowerCase());
     });
     return (
       <div>
@@ -67,7 +64,7 @@ class Navbar extends Component {
           <input
             type="text"
             onChange={this.handleQuery}
-            value={this.state.query}
+            value={this.props.query}
             placeholder="Search..."
           />
           <Link to={"/"}>Home</Link>
@@ -91,4 +88,8 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+const mapStateToProps = state => {
+  return { teams: state.teams, query: state.query };
+};
+
+export default connect(mapStateToProps)(Navbar);
