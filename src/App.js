@@ -19,9 +19,10 @@ class App extends Component {
 
   renderAllTeams = () => {
     const { teamsData } = this.props;
+    const { teams } = teamsData;
     return (
       <div className="container">
-        {teamsData.map(team => (
+        {teams.map(team => (
           <Teams name={team.name} teamLead={team.teamLead} />
         ))}
       </div>
@@ -30,6 +31,8 @@ class App extends Component {
 
   render() {
     const { queryRequest, teamsData, usersData } = this.props;
+    const { teams } = teamsData;
+    console.log(teams);
     return (
       <BrowserRouter>
         {/* <Navbar /> */}
@@ -54,10 +57,11 @@ App.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { queryRequest, teamsData, usersData } = state;
   return {
-    queryRequest: state.queryRequest,
-    teamsData: state.teamsData,
-    usersData: state.usersData
+    queryRequest,
+    teamsData,
+    usersData
   };
 }
 
