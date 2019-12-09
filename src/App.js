@@ -23,7 +23,7 @@ class App extends Component {
     return (
       <div className="container">
         {teams.map(team => (
-          <Teams name={team.name} teamLead={team.teamLead} />
+          <Teams key={team.id} name={team.name} teamLead={team.teamLead} />
         ))}
       </div>
     );
