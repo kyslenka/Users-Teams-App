@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { connect } from "react-redux";
 
 const WrapperLink = styled(Link)`
   text-decoration: none;
@@ -13,32 +13,37 @@ const WrapperLink = styled(Link)`
   }
 `;
 
-class Teams extends Component {
-  render() {
-    return (
-      <div className="container">
-        <div className="card center">
-          <div>
-            <p>Team Name:</p>
-            {this.props.teams.name}
-          </div>
-          <div>
-            <p>Team Lead:</p>
-            {this.props.teams.teamLead}
-          </div>
-          <div className="link">
-            <WrapperLink to={"teams/" + this.props.teams.id}>
-              View Team Members
-            </WrapperLink>
-          </div>
+const Teams = props => {
+  const { teamsData } = props;
+  console.log(teamsData);
+  return (
+    <div className="container">
+      <div className="card center">
+        <div>
+          <p>Team Name:</p>
+          {teamsData.name}
+        </div>
+        <div>
+          <p>Team Lead:</p>
+          {teamsData.teamLead}
+        </div>
+        <div className="link">
+          <WrapperLink
+            to={
+              "https://tempo-exercises.herokuapp.com/rest/v1/teams/" +
+              this.props.id
+            }
+          >
+            View Team Members
+          </WrapperLink>
         </div>
       </div>
-    );
-  }
-}
-
-const mapStateToProps = state => {
-  return { teams: state.teams };
+    </div>
+  );
 };
 
-export default connect(mapStateToProps)(Teams);
+Teams.propTypes = {
+  teamsData: PropTypes.object.isRequired
+};
+
+export default Teams;

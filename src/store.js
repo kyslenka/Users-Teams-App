@@ -1,28 +1,29 @@
-import { createStore } from "redux";
+import { applyMiddleware, compose, createStore } from "redux";
+import thunk from "redux-thunk";
+
+const middlewares = [thunk];
 
 const initialState = {
-  query: "",
-  teams: [],
-  users: []
+  teams: []
 };
 
-function reducer(state = initialState, action) {
+const reducer = (state = { initialState }, action) => {
   switch (action.type) {
-    case "SET_QUERY":
-      return { ...state, query: action.query };
-    case "SET_TEAMS":
+    case "FETCH_TEAMS_REQUEST":
+      return state;
+    case "FETCH_SUCCESS":
       return { ...state, teams: action.teams };
-    case "SET_USERS":
-      return { ...state, users: action.users };
     default:
       return state;
   }
-}
+};
+
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const store = createStore(
   reducer,
   initialState,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeEnhancer(applyMiddleware(...middlewares))
 );
 
 let currentState = store.getState();

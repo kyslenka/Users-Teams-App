@@ -34,8 +34,8 @@ class Navbar extends Component {
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
     );
     const data = await response.json();
-    if (data.succes) {
-      this.props.dispatch({ type: "SET_QUERY", query: data.query });
+    if (data) {
+      this.props.dispatch({ type: "SET_QUERY", query: data });
     }
   };
 
