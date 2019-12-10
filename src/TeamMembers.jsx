@@ -1,33 +1,33 @@
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-class TeamMembers extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { id } = this.props;
-    const teamUsers = this.props.users.filter(user => user.teamId === id);
-    return (
-      <div>
-        <div className="card center">
-          <div>
-            <h1>Users:</h1>
-            <ul>
-              {teamUsers.map(user => (
-                <li>{user.userId}</li>
-              ))}
-            </ul>
-          </div>
+const TeamMembers = props => {
+  const { usersData, id } = props;
+  const { users } = usersData;
+  const teamUsers = users.filter(user => user.teamId === id);
+  return (
+    <div>
+      <div className="card center">
+        <div>
+          <h1>Users:</h1>
+          <ul>
+            {teamUsers.map(user => (
+              <li>{user.userId}</li>
+            ))}
+          </ul>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+TeamMembers.propTypes = {
+  usersData: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => {
-  return { users: state.users };
+  return { usersData: state.usersData };
 };
 
 export default connect(mapStateToProps)(TeamMembers);

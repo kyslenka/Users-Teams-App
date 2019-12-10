@@ -28,15 +28,9 @@ const Teams = props => {
           <p>Team Lead:</p>
           {props.teamLead}
         </div>
-        {/* <div className="link">
-          <WrapperLink
-            to={
-              "https://tempo-exercises.herokuapp.com/rest/v1/teams/" + props.id
-            }
-          >
-            View Team Members
-          </WrapperLink>
-        </div> */}
+        <div className="link">
+          <WrapperLink to={"/teams/" + props.id}>View Team Members</WrapperLink>
+        </div>
       </div>
     </div>
   );

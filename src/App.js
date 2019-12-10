@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { fetchTeamsData, fetchUsersData } from "./actions.js";
 import Teams from "./Teams.jsx";
+import TeamMembers from "./TeamMembers.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class App extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchTeamsData());
-    // dispatch(fetchUsersData());
+    dispatch(fetchUsersData());
   }
 
   renderAllTeams = () => {
@@ -29,6 +30,13 @@ class App extends Component {
     );
   };
 
+  renderTeamMembers = routerData => {
+    const { usersData } = this.props;
+    const { users } = usersData;
+    const teamId = routerData.match.params.teamId;
+    return <TeamMembers users={users} id={teamId} />;
+  };
+
   render() {
     const { queryRequest, teamsData, usersData } = this.props;
     const { teams } = teamsData;
@@ -38,11 +46,11 @@ class App extends Component {
         {/* <Navbar /> */}
         <div>
           <Route exact={true} path="/teams" render={this.renderAllTeams} />
-          {/* <Route
+          <Route
             exact={true}
             path="/teams/:teamId/"
             render={this.renderTeamMembers}
-          /> */}
+          />
         </div>
       </BrowserRouter>
     );
