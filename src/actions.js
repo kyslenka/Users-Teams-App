@@ -6,98 +6,85 @@ import {
   REQUEST_USERSDATA,
   RECEIVE_USERSDATA,
   RECEIVE_USERSDATA_ERROR,
-  REQUEST_USERSDATA_ID,
-  RECEIVE_USERSDATA_ID,
-  RECEIVE_USERSDATA_ID_ERROR
+  //   REQUEST_USERSDATA_ID,
+  //   RECEIVE_USERSDATA_ID,
+  //   RECEIVE_USERSDATA_ID_ERROR,
+  RECEIVE_TEAMLEADSDATA
 } from "./ActionTypes.js";
 
-export function querySelect(query) {
-  return {
-    type: QUERY_SELECT,
-    query: data
-  };
-}
-
-export function requestTeamsData() {
-  return {
-    type: REQUEST_TEAMSDATA
-  };
-}
-
-function receiveTeamsData(json) {
-  return {
-    type: RECEIVE_TEAMSDATA,
-    teams: json
-  };
-}
-
-function receiveTeamsDataErr(error) {
-  return {
-    type: RECEIVE_TEAMSDATA_ERROR,
-    error
-  };
-}
-
-function requestUsersData() {
-  return {
-    type: REQUEST_USERSDATA
-  };
-}
-
-function receiveUsersData(json) {
-  return {
-    type: RECEIVE_USERSDATA,
-    users: json
-  };
-}
-
-function receiveUsersDataErr(error) {
-  return {
-    type: RECEIVE_USERSDATA_ERROR,
-    error
-  };
-}
-
-// function requestUsersDataId() {
+// export function querySelect(query) {
 //   return {
-//     type: REQUEST_USERSDATA_ID
-//   };
-// }
-
-// function receiveUsersDataId(json) {
-//   return {
-//     type: RECEIVE_USERSDATA_ID,
-//     userId: json
-//   };
-// }
-
-// function receiveUsersDataErrId(error) {
-//   return {
-//     type: RECEIVE_USERSDATA_ERROR_ID,
-//     error
+//     type: QUERY_SELECT,
+//     query
 //   };
 // }
 
 export function fetchTeamsData() {
   return dispatch => {
-    dispatch(requestTeamsData());
+    dispatch({ type: REQUEST_TEAMSDATA });
     return fetch(
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
     )
       .then(res => res.json())
-      .then(json => dispatch(receiveTeamsData(json)))
-      .catch(err => dispatch(receiveTeamsDataErr(err)));
+      .then(teams => dispatch({ type: RECEIVE_TEAMSDATA, teams: teams }))
+      .catch(err => dispatch({ type: RECEIVE_TEAMSDATA_ERROR, err }));
   };
 }
 
 export function fetchUsersData() {
   return dispatch => {
-    dispatch(requestUsersData());
+    dispatch({ type: REQUEST_USERSDATA });
     return fetch(
       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users"
     )
       .then(res => res.json())
-      .then(json => dispatch(receiveUsersData(json)))
-      .catch(err => dispatch(receiveUsersDataErr(err)));
+      .then(users => dispatch({ type: RECEIVE_USERSDATA, users: users }))
+      .catch(err => dispatch({ type: RECEIVE_USERSDATA_ERROR, err }));
+  };
+}
+
+// export function fetchUsersDataId() {
+//   return (dispatch, getState) => {
+//     const { users } = getState().usersData;
+//     dispatch(fetchUsersData(users));
+//     dispatch({ type: REQUEST_USERSDATA_ID });
+//     return fetch(
+//       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/"
+//     )
+//       .then(res => res.json())
+//       .then(usersId =>
+//         dispatch({ type: RECEIVE_USERSDATA_ID, usersId: usersId })
+//       )
+//       .catch(err => dispatch({ type: RECEIVE_USERSDATA_ID_ERROR, err }));
+//   };
+// }
+
+// export function queryRequest() {
+//   return (dispatch, getState) => {
+//     const { teams } = getState().teamsData;
+//     dispatch(fetchTeamsData(teams));
+//   };
+// }
+
+export function getTeamLeadsNames() {
+  return (dispatch, getState) => {
+    const { teams } = getState().teamsData;
+    dispatch(fetchTeamsData(teams));
+    const { users } = getState().usersData;
+    dispatch(fetchUsersData(users));
+    const formattedTeams = teams.map(async team => {
+      team.users = users.filter(user => user.teamId === team.id);
+      const { teamLead } = team;
+      if (!teamLead) {
+        return team;
+      }
+      const leadResponse = await fetch(
+        `https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/${team.teamLead}`
+      );
+      const lead = await leadResponse.json();
+      team.teamLead = `${lead.name.first} ${lead.name.last}`;
+      return formattedTeams;
+    });
+    // console.log(await Promise.all(formattedTeams));
   };
 }

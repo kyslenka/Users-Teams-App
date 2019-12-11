@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { fetchTeamsData } from "./actions.js";
 
 const NavContainer = styled.div`
   display: flex;
@@ -25,52 +26,42 @@ const NavContainer = styled.div`
   }
 `;
 
+const WrapperLink = styled(Link)`
+  text-decoration: none;
+  padding: 10px 0;
+  color: blue;
+  cursor: pointer;
+  &:hover {
+    color: blueviolet;
+  }
+`;
 class Navbar extends Component {
   constructor(props) {
     super(props);
-    // this.handleQuery = this.handleQuery.bind(this);
+    this.state = {
+      query: ""
+    };
+    this.handleChange = this.handleChange.bind(this);
   }
 
-  // handleQuery(evt) {
-  //   const { dispatch } = this.props;
-  //   dispatch(querySelect(evt.target.value));
-  // }
-  // fetchTeams = async () => {
-  //   const response = await fetch(
-  //     "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/teams"
-  //   );
-  //   const data = await response.json();
-  //   if (data) {
-  //     this.props.dispatch({ type: "SET_QUERY", query: data });
-  //   }
-  // };
+  handleChange(event) {
+    this.setState({ query: event.target.value });
+  }
 
-  // handleQuery = evt => {
-  //   this.props.dispatch({
-  //     type: "SET_QUERY",
-  //     query: evt.target.value
-  //   });
-  //   () => {
-  //     if (this.props.query && this.props.query.length > 1) {
-  //       if (this.props.query.length % 2 === 0) {
-  //         this.fetchTeams();
-  //       }
-  //     } else if (!this.props.query) {
-  //     }
-  //   };
-  // };
   render() {
     const { teamsData } = this.props;
-    const results = teamsData.filter(team => {
-      return team.name.toLowerCase().includes(query.toLowerCase());
+    const { teams } = teamsData;
+    console.log(teams);
+    const results = teams.filter(team => {
+      return team.name.toLowerCase().includes(this.state.query.toLowerCase());
     });
     return (
       <div>
         <NavContainer>
           <input
             type="text"
-            onChange={this.handleQuery}
-            value={query}
+            onChange={this.handleChange}
+            value={this.state.query}
             placeholder="Search..."
           />
           <Link to={"/"}>Home</Link>
@@ -80,7 +71,7 @@ class Navbar extends Component {
           <ul>
             {results.map(team => (
               <li>
-                <Link to={`/teams/${team.id}`}>{team.name}</Link>
+                <WrapperLink to={`/teams/${team.id}`}>{team.name}</WrapperLink>
               </li>
             ))}
           </ul>
@@ -91,12 +82,11 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
-  teamsData: PropTypes.object.isRequired,
-  queryRequest: PropTypes.string.isRequired
+  teamsData: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => {
-  return { teamsData: state.teamsData, queryRequest: state.queryRequest };
+  return { teamsData: state.teamsData };
 };
 
 export default connect(mapStateToProps)(Navbar);

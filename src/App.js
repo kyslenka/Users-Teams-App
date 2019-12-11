@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { fetchTeamsData, fetchUsersData } from "./actions.js";
+import { fetchTeamsData, fetchUsersData, fetchUsersDataId } from "./actions.js";
 import Teams from "./Teams.jsx";
 import TeamMembers from "./TeamMembers.jsx";
+import Navbar from "./Navbar.jsx";
 
 class App extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class App extends Component {
     const { dispatch } = this.props;
     dispatch(fetchTeamsData());
     dispatch(fetchUsersData());
+    // dispatch(fetchUsersDataId());
   }
 
   renderAllTeams = () => {
@@ -38,12 +40,14 @@ class App extends Component {
   };
 
   render() {
-    const { queryRequest, teamsData, usersData } = this.props;
+    const { teamsData } = this.props;
     const { teams } = teamsData;
+    // const { usersId } = usersDataId;
+    // console.log(usersId);
     console.log(teams);
     return (
       <BrowserRouter>
-        {/* <Navbar /> */}
+        <Navbar />
         <div>
           <Route exact={true} path="/teams" render={this.renderAllTeams} />
           <Route
@@ -58,18 +62,20 @@ class App extends Component {
 }
 
 App.propTypes = {
-  queryRequest: PropTypes.string.isRequired,
+  // queryRequest: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   teamsData: PropTypes.object.isRequired,
   usersData: PropTypes.object.isRequired
+  // usersDataId: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-  const { queryRequest, teamsData, usersData } = state;
+  const { teamsData, usersData, usersDataId } = state;
   return {
-    queryRequest,
+    // queryRequest,
     teamsData,
     usersData
+    // usersDataId
   };
 }
 
