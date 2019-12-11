@@ -81,9 +81,11 @@ export function getTeamLeadsNames() {
       const leadResponse = await fetch(
         `https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/${team.teamLead}`
       );
-      const lead = await leadResponse.json();
-      team.teamLead = `${lead.name.first} ${lead.name.last}`;
-      return formattedTeams;
+      const leads = await leadResponse.json();
+      dispatch({ type: RECEIVE_TEAMLEADSDATA, leads: leads });
+      console.log(getState().teamLeadsData);
+      team.teamLead = `${leads.name.first} ${leads.name.last}`;
+      return teams;
     });
     // console.log(await Promise.all(formattedTeams));
   };

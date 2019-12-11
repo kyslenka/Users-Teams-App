@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { getTeamLeadsNames } from "./actions.js";
 
 const WrapperLink = styled(Link)`
   text-decoration: none;
@@ -49,14 +48,12 @@ class Teams extends Component {
 }
 
 Teams.propTypes = {
-  teamsData: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired
+  teamsData: PropTypes.object.isRequired
 };
 
 let mapStateToProps = state => {
   return {
-    teamsData: state.teamsData,
-    teamLeadsData: state.teamLeadsData
+    teamsData: state.teamsData
   };
 };
 

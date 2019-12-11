@@ -2,7 +2,12 @@ import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { fetchTeamsData, fetchUsersData, fetchUsersDataId } from "./actions.js";
+import {
+  fetchTeamsData,
+  fetchUsersData,
+  fetchUsersDataId,
+  getTeamLeadsNames
+} from "./actions.js";
 import Teams from "./Teams.jsx";
 import TeamMembers from "./TeamMembers.jsx";
 import Navbar from "./Navbar.jsx";
@@ -16,17 +21,25 @@ class App extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchTeamsData());
-    dispatch(fetchUsersData());
+    // dispatch(fetchUsersData());
     // dispatch(fetchUsersDataId());
+    dispatch(getTeamLeadsNames());
   }
 
   renderAllTeams = () => {
-    const { teamsData } = this.props;
+    const { teamsData, teamLeadsData } = this.props;
     const { teams } = teamsData;
+    const { leads } = teamLeadsData;
+    // const teamLead = `${leads.name.first} ${leads.name.last}`;
+    // teams.teamLead = `${leads.name.first} ${leads.name.last}`;
     return (
       <div className="container">
         {teams.map(team => (
-          <Teams key={team.id} name={team.name} teamLead={team.teamLead} />
+          <Teams
+            key={team.id}
+            name={team.name}
+            teamLead={`${leads.name.first} ${leads.name.last}`}
+          />
         ))}
       </div>
     );
@@ -65,16 +78,18 @@ App.propTypes = {
   // queryRequest: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   teamsData: PropTypes.object.isRequired,
-  usersData: PropTypes.object.isRequired
+  usersData: PropTypes.object.isRequired,
+  teamLeadsData: PropTypes.array.isRequired
   // usersDataId: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-  const { teamsData, usersData, usersDataId } = state;
+  const { teamsData, usersData, usersDataId, teamLeadsData } = state;
   return {
     // queryRequest,
     teamsData,
-    usersData
+    usersData,
+    teamLeadsData
     // usersDataId
   };
 }

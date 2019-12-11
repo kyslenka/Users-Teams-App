@@ -26,15 +26,6 @@ const NavContainer = styled.div`
   }
 `;
 
-const WrapperLink = styled(Link)`
-  text-decoration: none;
-  padding: 10px 0;
-  color: blue;
-  cursor: pointer;
-  &:hover {
-    color: blueviolet;
-  }
-`;
 class Navbar extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +62,7 @@ class Navbar extends Component {
           <ul>
             {results.map(team => (
               <li>
-                <WrapperLink to={`/teams/${team.id}`}>{team.name}</WrapperLink>
+                <div>{team.name}</div>
               </li>
             ))}
           </ul>
