@@ -1,6 +1,5 @@
 import { combineReducers } from "redux";
 import {
-  //   QUERY_SELECT,
   REQUEST_TEAMSDATA,
   RECEIVE_TEAMSDATA,
   RECEIVE_TEAMSDATA_ERROR,
@@ -8,19 +7,7 @@ import {
   RECEIVE_USERSDATA,
   RECEIVE_USERSDATA_ERROR,
   RECEIVE_TEAMLEADSDATA
-  //   REQUEST_USERSDATA_ID,
-  //   RECEIVE_USERSDATA_ID,
-  //   RECEIVE_USERSDATA_ID_ERROR
 } from "./ActionTypes.js";
-
-// export function queryRequest(state = "", action) {
-//   switch (action.type) {
-//     case QUERY_SELECT:
-//       return { ...state, query: action.query };
-//     default:
-//       return state;
-//   }
-// }
 
 export function teamsData(
   state = {
@@ -82,36 +69,6 @@ export function usersData(
   }
 }
 
-// export function usersDataId(
-//   state = {
-//     isFetching: false,
-//     usersId: []
-//   },
-//   action
-// ) {
-//   switch (action.type) {
-//     case REQUEST_USERSDATA_ID:
-//       return {
-//         ...state,
-//         isFetching: true
-//       };
-//     case RECEIVE_USERSDATA_ID:
-//       return {
-//         ...state,
-//         isFetching: false,
-//         usersId: action.usersId
-//       };
-//     case RECEIVE_USERSDATA_ID_ERROR:
-//       return {
-//         ...state,
-//         isFetching: false,
-//         users: action.error
-//       };
-//     default:
-//       return state;
-//   }
-// }
-
 export function teamLeadsData(state = [], action) {
   switch (action.type) {
     case RECEIVE_TEAMLEADSDATA:
@@ -122,11 +79,9 @@ export function teamLeadsData(state = [], action) {
 }
 
 const rootReducer = combineReducers({
-  //   queryRequest,
   teamsData,
   usersData,
   teamLeadsData
-  //   usersDataId
 });
 
 export default rootReducer;

@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import {
   fetchTeamsData,
   fetchUsersData,
-  fetchUsersDataId,
   getTeamLeadsNames
 } from "./actions.js";
 import Teams from "./Teams.jsx";
@@ -21,24 +20,21 @@ class App extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(fetchTeamsData());
-    // dispatch(fetchUsersData());
-    // dispatch(fetchUsersDataId());
+    dispatch(fetchUsersData());
     dispatch(getTeamLeadsNames());
   }
 
   renderAllTeams = () => {
-    const { teamsData, teamLeadsData } = this.props;
+    const { teamsData } = this.props;
     const { teams } = teamsData;
-    const { leads } = teamLeadsData;
-    // const teamLead = `${leads.name.first} ${leads.name.last}`;
-    // teams.teamLead = `${leads.name.first} ${leads.name.last}`;
     return (
       <div className="container">
         {teams.map(team => (
           <Teams
             key={team.id}
             name={team.name}
-            teamLead={`${leads.name.first} ${leads.name.last}`}
+            teamLead={team.teamLead}
+            id={team.id}
           />
         ))}
       </div>
@@ -49,15 +45,13 @@ class App extends Component {
     const { usersData } = this.props;
     const { users } = usersData;
     const teamId = routerData.match.params.teamId;
+    console.log(teamId);
     return <TeamMembers users={users} id={teamId} />;
   };
 
   render() {
     const { teamsData } = this.props;
     const { teams } = teamsData;
-    // const { usersId } = usersDataId;
-    // console.log(usersId);
-    console.log(teams);
     return (
       <BrowserRouter>
         <Navbar />
@@ -75,22 +69,18 @@ class App extends Component {
 }
 
 App.propTypes = {
-  // queryRequest: PropTypes.string.isRequired,
   dispatch: PropTypes.func.isRequired,
   teamsData: PropTypes.object.isRequired,
   usersData: PropTypes.object.isRequired,
   teamLeadsData: PropTypes.array.isRequired
-  // usersDataId: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-  const { teamsData, usersData, usersDataId, teamLeadsData } = state;
+  const { teamsData, usersData, teamLeadsData } = state;
   return {
-    // queryRequest,
     teamsData,
     usersData,
     teamLeadsData
-    // usersDataId
   };
 }
 

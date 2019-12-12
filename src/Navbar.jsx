@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { fetchTeamsData } from "./actions.js";
 
 const NavContainer = styled.div`
   display: flex;
@@ -25,48 +24,79 @@ const NavContainer = styled.div`
     margin: 10px;
   }
 `;
+const WrapperLink = styled(Link)`
+  text-decoration: none;
+  padding: 10px 0;
+  color: blue;
+  cursor: pointer;
+  &:hover {
+    color: blueviolet;
+  }
+`;
 
 class Navbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: ""
+      query: "",
+      showResults: false
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(event) {
-    this.setState({ query: event.target.value });
+    this.setState({
+      query: event.target.value,
+      showResults: true
+    });
   }
 
   render() {
     const { teamsData } = this.props;
     const { teams } = teamsData;
-    console.log(teams);
     const results = teams.filter(team => {
       return team.name.toLowerCase().includes(this.state.query.toLowerCase());
     });
     return (
       <div>
-        <NavContainer>
-          <input
-            type="text"
-            onChange={this.handleChange}
-            value={this.state.query}
-            placeholder="Search..."
-          />
-          <Link to={"/"}>Home</Link>
-          <Link to={"/teams"}>Teams</Link>
-        </NavContainer>
-        <div className="card center">
-          <ul>
-            {results.map(team => (
-              <li>
-                <div>{team.name}</div>
-              </li>
-            ))}
-          </ul>
-        </div>
+        {this.state.showResults ? (
+          <div>
+            <NavContainer>
+              <input
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.query}
+                placeholder="Search..."
+              />
+              <Link to={"/"}>Home</Link>
+              <Link to={"/teams"}>Teams</Link>
+            </NavContainer>
+            <div className="card center">
+              <ul>
+                {results.map(team => (
+                  <li>
+                    <WrapperLink to={`/teams/${team.id}`}>
+                      {team.name}
+                    </WrapperLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <NavContainer>
+              <input
+                type="text"
+                onChange={this.handleChange}
+                value={this.state.query}
+                placeholder="Search..."
+              />
+              <Link to={"/"}>Home</Link>
+              <Link to={"/teams"}>Teams</Link>
+            </NavContainer>
+          </div>
+        )}
       </div>
     );
   }

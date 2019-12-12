@@ -18,10 +18,6 @@ class Teams extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(getTeamLeadsNames());
-  }
 
   render() {
     const { teamsData } = this.props;

@@ -1,23 +1,12 @@
 import {
-  QUERY_SELECT,
   REQUEST_TEAMSDATA,
   RECEIVE_TEAMSDATA,
   RECEIVE_TEAMSDATA_ERROR,
   REQUEST_USERSDATA,
   RECEIVE_USERSDATA,
   RECEIVE_USERSDATA_ERROR,
-  //   REQUEST_USERSDATA_ID,
-  //   RECEIVE_USERSDATA_ID,
-  //   RECEIVE_USERSDATA_ID_ERROR,
   RECEIVE_TEAMLEADSDATA
 } from "./ActionTypes.js";
-
-// export function querySelect(query) {
-//   return {
-//     type: QUERY_SELECT,
-//     query
-//   };
-// }
 
 export function fetchTeamsData() {
   return dispatch => {
@@ -43,29 +32,6 @@ export function fetchUsersData() {
   };
 }
 
-// export function fetchUsersDataId() {
-//   return (dispatch, getState) => {
-//     const { users } = getState().usersData;
-//     dispatch(fetchUsersData(users));
-//     dispatch({ type: REQUEST_USERSDATA_ID });
-//     return fetch(
-//       "https://cors-anywhere.herokuapp.com/https://tempo-exercises.herokuapp.com/rest/v1/users/"
-//     )
-//       .then(res => res.json())
-//       .then(usersId =>
-//         dispatch({ type: RECEIVE_USERSDATA_ID, usersId: usersId })
-//       )
-//       .catch(err => dispatch({ type: RECEIVE_USERSDATA_ID_ERROR, err }));
-//   };
-// }
-
-// export function queryRequest() {
-//   return (dispatch, getState) => {
-//     const { teams } = getState().teamsData;
-//     dispatch(fetchTeamsData(teams));
-//   };
-// }
-
 export function getTeamLeadsNames() {
   return (dispatch, getState) => {
     const { teams } = getState().teamsData;
@@ -87,6 +53,5 @@ export function getTeamLeadsNames() {
       team.teamLead = `${leads.name.first} ${leads.name.last}`;
       return teams;
     });
-    // console.log(await Promise.all(formattedTeams));
   };
 }
